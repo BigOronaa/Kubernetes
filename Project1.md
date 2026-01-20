@@ -38,6 +38,8 @@ C:\minikube\minikube.exe start --driver=docker
 
 ### I addee Screnshoot
 ![alt text](images/minikubestart.png)
+![alt text](images/minikube-docker.png)
+
 
 
 ### 4. Verify Minikube Cluster
