@@ -151,7 +151,7 @@ kubectl run curlpod --image=busybox --restart=Never -it -- sh
 wget -qO- http://nginx-deployment.default.svc.cluster.local
 ```
 ### I added Screenshots
-![alt text](images3/node.png)
+![alt text](images3/nodeport.png)
 
 
 ## Step 5: Add Liveness and Readiness Probes
