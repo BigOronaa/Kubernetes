@@ -1,4 +1,4 @@
-#  Install and Setup Minikube 
+#  How I Installed and Setup a Minikube 
 
 ## Task Overview
 In this project, I installed and set up Minikube on a Windows machine using the Docker driver. This allows me to run a local Kubernetes cluster for development and testing purposes without using a cloud provider.
@@ -13,7 +13,7 @@ In this project, I installed and set up Minikube on a Windows machine using the 
 ```bash
 kubectl version --client
 ```
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/version.png)
 
 
@@ -25,7 +25,7 @@ kubectl version --client
 C:\minikube\minikube.exe version
 ```
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/version.png)
 
 
@@ -36,7 +36,7 @@ C:\minikube\minikube.exe start --driver=docker
 ```
 - Minikube successfully started with Kubernetes v1.30.0.
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/minikubestart.png)
 ![alt text](images/minikube-docker.png)
 
@@ -50,7 +50,7 @@ kubectl cluster-info
 ```
 - Confirmed all components were running.
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/minikubestatus.png)
 
 
@@ -68,7 +68,7 @@ kubectl expose deployment hello-minikube --type=NodePort --port=8080
 kubectl get pods
 ```
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/app.png)
 ![alt text](images/pods.png)
 
@@ -81,7 +81,7 @@ kubectl get pods
 But i encountered this error X Exiting due to SVC_TUNNEL_START: error starting tunnel: creating ssh conn: lookup localhost on 8.8.8.8:53: no such host
 *
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/error1.png)
 
 
@@ -91,7 +91,7 @@ kubectl port-forward deployment/hello-minikube 8080:8080
 ```
 - Opened browser at `http://127.0.0.1:8080` and successfully accessed the hello-minikube echoserver.
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/fix.png)
 ![alt text](images/page.png)
 
@@ -103,7 +103,7 @@ C:\minikube\minikube.exe stop
 C:\minikube\minikube.exe delete
 ```
 
-### I addee Screnshoot
+### I added Screnshoot
 ![alt text](images/minikubestop.png)
 
 
