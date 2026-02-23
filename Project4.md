@@ -1,4 +1,4 @@
-# Lab Guide: Deploying a Web Application on GKE with Helm, NGINX Ingress, Cert-Manager, Vault, and CI/CD
+# Deploying a Web Application on GKE with Helm, NGINX Ingress, Cert-Manager, Vault, and CI/CD
 
 ## Project Overview
 In this project, I deployed a web application on Google Kubernetes Engine (GKE) using Helm charts. The application was containerized with Docker and stored in Google Artifact Registry. I implemented NGINX Ingress for traffic routing, cert-manager for TLS certificates, Vault for secrets management, and automated the deployment using a GitHub Actions CI/CD pipeline.
