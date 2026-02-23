@@ -55,11 +55,11 @@ As a junior DevOps engineer, I compared Kubernetes and Docker Swarm to understan
 ---
 
 
-## Task 2: Deploy a Basic Application on Kubernetes
+## Task 2: Deploying a Basic Application on Kubernetes
 
 ### 1. Setting up the Minikube Cluster
 
-```powershell
+```bash
 C:\minikube\minikube.exe start --driver=docker
 ```
 
