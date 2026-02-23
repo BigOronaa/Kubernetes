@@ -1,4 +1,4 @@
-# Configuring Autoscaling, Load Balancing Project
+# Configuring Autoscaling and Load Balancing 
 
 
 ## Overview
