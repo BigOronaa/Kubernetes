@@ -1,4 +1,4 @@
-# Lab Guide: Implementing Kubernetes Autoscaling, Load Balancing, and Health Probes
+# Implementing Kubernetes Autoscaling, Load Balancing, and Health Probes
 
 ## Project Objective
 
