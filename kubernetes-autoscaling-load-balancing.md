@@ -1,4 +1,4 @@
-# Configuring Autoscaling and Load Balancing 
+# Building a Scalable Kubernetes Web Platform with HPA and Load Balancing
 
 
 ## Overview
