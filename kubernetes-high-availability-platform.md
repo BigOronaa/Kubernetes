@@ -2,7 +2,7 @@
 
 ## Project Objective
 
-In this lab, I implemented a Kubernetes deployment with autoscaling, load balancing, and health probes to manage pod availability and traffic efficiently. I also tested horizontal pod autoscaling (HPA) and configured liveness and readiness probes to monitor pod health.
+This project demonstrates the implementation of a scalable and resilient Kubernetes workload using Horizontal Pod Autoscaling (HPA), Services, and health probes. The deployment was configured to handle traffic efficiently, maintain application availability, and automatically recover from unhealthy container states through readiness and liveness probes.
 
 ## Prerequisites
 - A running Kubernetes cluster
