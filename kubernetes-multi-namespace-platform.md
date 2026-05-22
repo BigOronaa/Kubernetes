@@ -1,91 +1,192 @@
-# Deploying a Multi-Namespace Project
+# Multi-Namespace Kubernetes Platform on AWS EKS
 
-## Objectives
+## Project Overview
 
-In this project, I set up an AWS EKS cluster, deployed the Kubernetes Dashboard, created multiple namespaces with pods, and monitored resources using Metrics Server. The goal was to demonstrate my ability to manage Kubernetes resources, monitor workloads, and maintain cluster observability in a multi-namespace environment.
+This project demonstrates the deployment and management of a multi-namespace Kubernetes environment on AWS EKS. The implementation focused on cluster provisioning, namespace isolation, workload deployment, and observability using Kubernetes Dashboard and Metrics Server.
 
-## Project Deliverables
+The environment was structured to simulate production-style workload separation across development, testing, staging, production, and monitoring environments.
 
-1. **AWS EKS Cluster:** A fully functional EKS cluster with 2 worker nodes.
-2. **Kubernetes Dashboard:** Installed and accessible for monitoring the cluster.
-3. **Namespaces and Pods:** 5 namespaces (`dev`, `test`, `staging`, `prod`, and `monitoring`) each with 1 running NGINX pod.
-4. **Resource Monitoring:** Metrics Server installed to track CPU and memory usage.
+---
 
-## Task 1: Set Up AWS EKS Cluster
+## Architecture Summary
 
-- I Create an AWS EKS cluster with 2 worker nodes.
-- I already Installed eksctl, kubectl, and awscli on my local machine
-- I verified each of them by running:
+### Infrastructure Components
+
+- AWS EKS Cluster
+- 2 Managed Worker Nodes
+- Kubernetes Dashboard
+- Metrics Server
+- 5 Kubernetes Namespaces
+- NGINX Workloads per Namespace
+
+### Namespaces Created
+
+- `dev`
+- `test`
+- `staging`
+- `prod`
+- `monitoring`
+
+---
+
+# Project Objectives
+
+The objectives of this project were to:
+
+- Provision and configure an AWS EKS cluster
+- Implement namespace-based environment isolation
+- Deploy workloads across multiple namespaces
+- Configure Kubernetes Dashboard for cluster visibility
+- Enable cluster resource monitoring using Metrics Server
+- Validate node and pod resource consumption
+- Gain operational experience with Kubernetes administration
+
+---
+
+# Environment Setup
+
+## Installed Tools
+
+The following tools were configured locally before deployment:
+
+- `eksctl`
+- `kubectl`
+- `awscli`
+- `helm`
+
+### Version Verification
+
 ```bash
 eksctl version
 kubectl version --client
 aws --version
 ```
 
-### I added Screenshots
-![alt text](images4/verify.png)
+### Screenshot
 
-- Using eksctl, I created an EKS cluster with 1 worker nodes in my preferred AWS region and scaled later to two worker nodes, The command I used:
+![Tool Verification](images4/verify.png)
+
+---
+
+# AWS EKS Cluster Deployment
+
+## Cluster Creation
+
+The cluster was provisioned using `eksctl` in the `us-east-1` region.
+
+### Initial Cluster Deployment
+
 ```bash
-eksctl create cluster --name multi-namespace-cluster --region us-east-1 --nodegroup-name my-nodes --node-type t3.small --nodes 1 --managed
-eksctl scale nodegroup `
---cluster multi-namespace-cluster `
---region us-east-1 `
---name my-nodes `
---nodes 2 `
+eksctl create cluster \
+--name multi-namespace-cluster \
+--region us-east-1 \
+--nodegroup-name my-nodes \
+--node-type t3.small \
+--nodes 1 \
+--managed
+```
+
+## Worker Node Scaling
+
+The node group was later scaled to 2 worker nodes to improve workload distribution and simulate a production-ready environment.
+
+```bash
+eksctl scale nodegroup \
+--cluster multi-namespace-cluster \
+--region us-east-1 \
+--name my-nodes \
+--nodes 2 \
 --nodes-max 3
 ```
 
-### I added Screenshots
-![alt text](images4/eksctl.png)
-![alt text](images4/stacks.png)
-![alt text](images4/scalenodes.png)
+### Screenshots
 
-- I verified that the cluster and nodes were running using kubectl
+![EKS Cluster Deployment](images4/eksctl.png)
+
+![CloudFormation Stacks](images4/stacks.png)
+
+![Node Scaling](images4/scalenodes.png)
+
+---
+
+## Cluster Verification
+
+The cluster and worker nodes were verified using `kubectl`.
+
 ```bash
 kubectl get nodes
 kubectl get svc
 ```
 
-### I added Screenshots
-![alt text](images4/getnodes.png)
+### Screenshot
 
+![Cluster Nodes](images4/getnodes.png)
 
-## Task 2: Install Kubernetes Dashboard
-- I deployed the Kubernetes Dashboard using Helm to the kubernetes-dashboard namespace:
+---
+
+# Kubernetes Dashboard Deployment
+
+## Dashboard Installation Using Helm
+
+The Kubernetes Dashboard was deployed into a dedicated namespace using Helm.
+
 ```bash
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace
+helm upgrade --install kubernetes-dashboard \
+kubernetes-dashboard/kubernetes-dashboard \
+--namespace kubernetes-dashboard \
+--create-namespace
 ```
 
-### I added Screenshots
-![alt text](images4/k8sdashboard.png)
+### Screenshot
 
-- I confirmed the dashboard pods were running:
+![Kubernetes Dashboard Installation](images4/k8sdashboard.png)
+
+---
+
+## Dashboard Pod Verification
+
 ```bash
 kubectl get pods -n kubernetes-dashboard
 ```
 
-### I added Screenshots
-![alt text](images4/dashboards.png)
+### Screenshot
 
+![Dashboard Pods](images4/dashboards.png)
 
-- I created a ServiceAccount and ClusterRoleBinding with cluster-admin privileges to enable full access to cluster resources in a YAML file and applied it.
+---
 
-### I added Screenshots
-![alt text](images4/admin.png)
+## Administrative Access Configuration
 
-- I generated an authentication token and accessed the dashboard securely using:
+A `ServiceAccount` and `ClusterRoleBinding` with administrative privileges were created to enable secure access to cluster resources through the dashboard.
+
+### Screenshot
+
+![Cluster Admin Configuration](images4/admin.png)
+
+---
+
+## Dashboard Access
+
+Cluster access was exposed locally using:
+
 ```bash
 kubectl proxy
 ```
-- I used my local browser to view the Dashboard resources
 
-### I added Screenshots
-![alt text](images4/kubedashboard.png)
+Authentication tokens were generated and used to securely access the dashboard interface.
 
+### Screenshot
 
-## Task 3: Create Namespaces and Deploy Pods
-I created 5 name spaces: dev, test, staging, prod, and monitoring, using the command:
+![Kubernetes Dashboard UI](images4/kubedashboard.png)
+
+---
+
+# Namespace Isolation and Workload Deployment
+
+## Namespace Creation
+
+Five namespaces were created to simulate environment isolation commonly used in production Kubernetes environments.
+
 ```bash
 kubectl create namespace dev
 kubectl create namespace test
@@ -94,23 +195,35 @@ kubectl create namespace prod
 kubectl create namespace monitoring
 ```
 
-### I added Screenshots
-![alt text](images4/namespacescreate.png)
+### Screenshot
 
-- I created a YAML manifest to deploy 1 NGINX pod per namespace.
-```Yaml
+![Namespace Creation](images4/namespacescreate.png)
+
+---
+
+# NGINX Workload Deployment
+
+## Pod Manifest
+
+A reusable NGINX pod manifest was created and deployed into each namespace.
+
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
 spec:
   containers:
-  - name: nginx
-    image: nginx:latest
-    ports:
-    - containerPort: 80
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 80
 ```
-- I applied the manifest per namespace using:
+
+---
+
+## Pod Deployment
+
 ```bash
 kubectl apply -f nginx-pod.yaml -n dev
 kubectl apply -f nginx-pod.yaml -n test
@@ -119,10 +232,14 @@ kubectl apply -f nginx-pod.yaml -n prod
 kubectl apply -f nginx-pod.yaml -n monitoring
 ```
 
-### I added Screenshots
-![alt text](images4/applynginx.png)
+### Screenshot
 
-- I Checked the status of the pods in each namespace to ensure they are running using the command:
+![NGINX Deployment](images4/applynginx.png)
+
+---
+
+## Pod Verification
+
 ```bash
 kubectl get pods -n dev
 kubectl get pods -n test
@@ -131,41 +248,87 @@ kubectl get pods -n prod
 kubectl get pods -n monitoring
 ```
 
-## Task 4: Monitor Resources Using Kubernetes Dashboard
-- I Use the Kubernetes Dashboard to monitor the namespaces, pods, and nodes in the EKS cluster, and generate insights about resource usage.
-- I navigated to the Namespaces section in the dashboard and verified that all five namespaces were present:
-    - dev
-    - test
-    - staging
-    - prod
-    - monitoring
-- For each namespace, I clicked inside to view the pods. I confirmed that each namespace had one NGINX pod running.
+---
 
-### I added Screenshots
-![alt text](images4/dev.png)
-![alt text](images4/test.png)
-![alt text](images4/staging.png)
-![alt text](images4/prod.png)
-![alt text](images4/monitoring.png)
+# Resource Monitoring and Observability
 
-- I went to the Nodes section in the dashboard. I verified that both worker nodes I deployed in Task 1 were Ready.
-- I explored each node’s details:
-    - Checked CPU and memory usage.
-    - Observed the pods assigned to each node.
+## Metrics Server Integration
 
-### I added Screenshots
-![alt text](images4/cpu.png)
-![alt text](images4/k8snodes.png)
+Metrics Server was configured to enable CPU and memory monitoring across nodes and pods.
 
-- I Exported resource usage reports for the namespaces and nodes. I used Command-line verification using kubectl to export resources;
+This enabled:
+
+- Pod resource visibility
+- Node-level monitoring
+- Kubernetes Dashboard metrics integration
+- Resource usage analysis
+
+---
+
+## Namespace Monitoring
+
+Each namespace was verified through the Kubernetes Dashboard to ensure workloads were running successfully.
+
+### Screenshots
+
+### Development Namespace
+
+![Dev Namespace](images4/dev.png)
+
+### Test Namespace
+
+![Test Namespace](images4/test.png)
+
+### Staging Namespace
+
+![Staging Namespace](images4/staging.png)
+
+### Production Namespace
+
+![Production Namespace](images4/prod.png)
+
+### Monitoring Namespace
+
+![Monitoring Namespace](images4/monitoring.png)
+
+---
+
+# Node Monitoring
+
+The worker nodes were inspected to validate cluster health and workload scheduling.
+
+Key checks included:
+
+- Node readiness state
+- CPU utilization
+- Memory utilization
+- Pod scheduling distribution
+
+### Screenshots
+
+![CPU Metrics](images4/cpu.png)
+
+![Kubernetes Nodes](images4/k8snodes.png)
+
+---
+
+# Resource Usage Validation
+
+## Cluster-Wide Pod Visibility
+
 ```bash
-# View all pods in all namespaces
 kubectl get pods --all-namespaces -o wide
+```
 
-# View resource usage of nodes
+## Node Resource Usage
+
+```bash
 kubectl top nodes
+```
 
-# View resource usage of pods in each namespace
+## Namespace Pod Metrics
+
+```bash
 kubectl top pods -n dev
 kubectl top pods -n test
 kubectl top pods -n staging
@@ -173,30 +336,63 @@ kubectl top pods -n prod
 kubectl top pods -n monitoring
 ```
 
-### I added Screenshots
-![alt text](images4/allpods.png)
-![alt text](images4/nodeusage.png)
-![alt text](images4/usage.png)
+### Screenshots
 
+![All Pods](images4/allpods.png)
 
-## Reflection and Learning
-- From this project, I gained hands-on experience in setting up and managing a multi-namespace Kubernetes environment on AWS EKS. I learned how to:
-- Deploy and manage an EKS cluster with multiple worker nodes, ensuring high availability and proper configuration.
-- Install and configure the Kubernetes Dashboard using Helm, create service accounts, and set up role bindings for secure access.
-- Organize resources using namespaces and deploy pods systematically, which reinforced my understanding of resource isolation and management in Kubernetes.
-- Monitor cluster resources effectively using both the Dashboard and Metrics Server, which helped me understand CPU/memory metrics, pod status, and node health.
-- Troubleshoot real-world issues, including port-forwarding, service accessibility, certificate warnings, and deployment errors, which improved my debugging and problem-solving skills in Kubernetes.
+![Node Usage](images4/nodeusage.png)
 
-Overall, this project strengthened my practical Kubernetes skills, particularly in cluster setup, resource management, monitoring, and security configurations, preparing me for managing production-grade Kubernetes environments.
+![Namespace Usage](images4/usage.png)
 
+---
 
-## Conclusion
+# Challenges and Troubleshooting
 
-This project demonstrated the complete lifecycle of setting up a multi-namespace Kubernetes environment on AWS EKS, deploying a monitoring dashboard, deploying workloads, and observing cluster metrics. The experience improved my proficiency in Kubernetes administration and cloud-native operations.
+During implementation, several operational issues were encountered and resolved, including:
 
+- Dashboard access configuration
+- Kubernetes authentication token generation
+- Service accessibility validation
+- Metrics Server integration issues
+- Namespace workload verification
+- Cluster role and RBAC configuration
+- Resource visibility troubleshooting
 
+These troubleshooting exercises improved practical Kubernetes debugging and operational skills.
 
-## Project Repository
+---
 
-You can find the complete source code for this project in the GitHub repository:
-[https://github.com/BigOronaa/k8s-multi-namespace](https://github.com/BigOronaa/k8s-multi-namespace)
+# Key Outcomes
+
+This project successfully demonstrated:
+
+- AWS EKS cluster provisioning and scaling
+- Namespace-based workload isolation
+- Kubernetes Dashboard deployment and administration
+- Resource observability using Metrics Server
+- Multi-environment workload management
+- Kubernetes operational troubleshooting
+- Cluster monitoring and validation
+
+---
+
+# Skills Demonstrated
+
+- AWS EKS Administration
+- Kubernetes Namespace Management
+- Kubernetes Dashboard Configuration
+- Helm Package Management
+- Metrics Server Deployment
+- Cluster Monitoring and Observability
+- Linux CLI Operations
+- Kubernetes RBAC
+- Resource Monitoring
+- Container Workload Management
+
+---
+
+# Conclusion
+
+This project provided hands-on experience deploying and operating a multi-namespace Kubernetes platform on AWS EKS. It reinforced practical skills in cluster provisioning, namespace isolation, workload deployment, monitoring, and Kubernetes administration.
+
+The implementation mirrors foundational production Kubernetes operations and demonstrates practical experience with cloud-native infrastructure management.
